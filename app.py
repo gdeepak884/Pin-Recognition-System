@@ -205,7 +205,7 @@ def pridict():
 
   for candidate in contiguous_large_y_groups:
       pincode = []
-      print("Candidate --- ")
+      #print("Candidate --- ")
       for rect_index in range(len(candidate)):
           rect = candidate[rect_index]
           x,y,w,h = rect
@@ -219,23 +219,11 @@ def pridict():
           pred = model.predict(final_img.reshape(1,28, 28, 1))
           pincode.append(pred.argmax())
       possible_pincodes.append(''.join(map(str, pincode)))
-
-
   if len(possible_pincodes) == 1:
-      resp = jsonify({
-      u'status': 200,
-      u'pin': possible_pincodes[0]   
-      })
-      resp.status_code = 200
-      return resp
+      return render_template('index.html', pincode=possible_pincodes[0])
   else:
       for pin in possible_pincodes:
-        resp = jsonify({
-        u'status': 200,
-        u'pin': pin   
-        })
-        resp.status_code = 200
-        return resp
+        return render_template('index.html', pincode=pin)
 if __name__=='__main__':
     app.run(debug=True)
 
