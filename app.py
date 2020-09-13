@@ -220,10 +220,10 @@ def pridict():
           pincode.append(pred.argmax())
       possible_pincodes.append(''.join(map(str, pincode)))
   if len(possible_pincodes) == 1:
-      return render_template('index.html', pincode=possible_pincodes[0])
+      return render_template('index.html', pincode=possible_pincodes[0], username=current_user.username)
   else:
       for pin in possible_pincodes:
-        return render_template('index.html', pincode=pin)
+        return render_template('index.html', pincode=pin, username=current_user.username)
 if __name__=='__main__':
     app.run(debug=True)
 
