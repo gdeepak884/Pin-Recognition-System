@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, redirect, flash
 import cv2
+import csv
 import numpy as np
 from PIL import Image, ImageDraw
 import functools, operator
@@ -219,8 +220,19 @@ def pridict():
           pred = model.predict(final_img.reshape(1,28, 28, 1))
           pincode.append(pred.argmax())
       possible_pincodes.append(''.join(map(str, pincode)))
+  csv_file = csv.reader(open('static/pincode.csv', "rt"), delimiter=",")
   if len(possible_pincodes) == 1:
-      return render_template('index.html', pincode=possible_pincodes[0], username=current_user.username)
+      count=0
+      for row in csv_file:
+          if possible_pincodes[0] == row[1]:
+              count+=1
+              #add='[%s]' % ', '.join(map(str, row))
+              return render_template('index.html', add='[%s]' % ', '.join(map(str, row)), pincode=possible_pincodes[0], username=current_user.username)
+      if count==0:
+          if len(possible_pincodes[0])>6 or len(possible_pincodes[0])<6:
+              return render_template('index.html', add="This is not a valid pincode", pincode=possible_pincodes[0], username=current_user.username)
+          else:
+              return render_template('index.html', add="The given pincode does not exist", pincode=possible_pincodes[0], username=current_user.username)
   else:
       for pin in possible_pincodes:
         return render_template('index.html', pincode=pin, username=current_user.username)
